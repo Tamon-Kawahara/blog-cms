@@ -86,17 +86,63 @@ class ArticleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Article $article)
     {
-        //
+        // カテゴリとタグを取得（フォームの選択肢用）
+        $categories = Category::orderBy('name')->get();
+        $tags = Tag::orderBy('name')->get();
+
+        // 記事本体+選択肢をビューに渡す
+        return view('admin.articles.edit', compact('article', 'categories', 'tags'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Article $article)
     {
-        //
+        // バリデーション
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            // 自分自身は除外してslugのユニークチェック
+            'slug' => ['nullable', 'string', 'max:255', 'unique:articles,slug,' . $article->id],
+            'body' => ['required', 'string'],
+            'status' => ['required', 'in:draft,published'],
+            'category_id' => ['nullable', 'exists:categories,id'],
+            'tags' => ['array'],
+            'tags.*' => ['integer', 'exists:tags,id'],
+            'thumbnail' => ['nullable', 'image', 'max:2048'],
+        ]);
+
+        // スラッグが未入力なら自動生成
+        if (empty($validated['slug'])) {
+            $validated['slug'] = \Illuminate\Support\Str::slug($validated['title']);
+        }
+
+        // サムネ画像の更新（新しいのがきた時だけ上書き）
+        if ($request->hasFile('thumbnail')) {
+            $path = $request->file('thumbnail')->store('thumbnail', 'public');
+            $validated['thumbnail'] = $path;
+        }
+
+        // published_atの制御
+        if ($validated['status'] === 'published') {
+            // まだ日付がない or draftから公開した時にはnowを入れる
+            $validated['published_at'] = $article->published_at ?? now();
+        } else {
+            // draftに戻したらpublished_atはnullに
+            $validated['published_at'] = null;
+        }
+
+        // 記事更新
+        $article->update($validated);
+
+        // タグの紐付け更新
+        $article->tags()->sync($validated['tags'] ?? []);
+
+        return redirect()
+            ->route('admin.articles.index')
+            ->with('status', 'Article updated successfully.');
     }
 
     /**
