@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Article;
+use App\Models\Category;
+use App\Models\Tag;
 
 class ArticleController extends Controller
 {
@@ -12,7 +15,11 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        return view('admin.articles.index');
+        $articles = Article::with(['category', 'tags'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.articles.index', compact('articles'));
     }
 
     /**
