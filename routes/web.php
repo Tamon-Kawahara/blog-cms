@@ -2,7 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\ArticleController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\TagController;
 
@@ -32,9 +33,17 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('articles', ArticleController::class);
+    Route::resource('articles', AdminArticleController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('tags', TagController::class);
 });
+
+// 公開用 記事一覧
+Route::get('/articles', [ArticleController::class, 'index'])
+    ->name('articles.index');
+
+// 公開用 記事詳細（slugで取得）
+Route::get('/articles/{article:slug}', [ArticleController::class, 'show'])
+    ->name('articles.show');
 
 require __DIR__ . '/auth.php';
