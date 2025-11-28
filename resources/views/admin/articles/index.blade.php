@@ -12,8 +12,7 @@
                 <div class="flex justify-between items-center mb-4">
                     <h1 class="text-2xl font-bold">Articles</h1>
 
-                    <a href="{{ route('admin.articles.create') }}"
-                       class="bg-blue-500 text-white px-4 py-2 rounded">
+                    <a href="{{ route('admin.articles.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded">
                         Create New Article
                     </a>
                 </div>
@@ -40,7 +39,8 @@
                                     </td>
                                     <td class="border px-2 md:px-4 py-2">
                                         @foreach ($article->tags as $tag)
-                                            <span class="inline-block text-xs md:text-sm bg-gray-200 px-2 py-1 rounded mr-1 mb-1">
+                                            <span
+                                                class="inline-block text-xs md:text-sm bg-gray-200 px-2 py-1 rounded mr-1 mb-1">
                                                 {{ $tag->name }}
                                             </span>
                                         @endforeach
@@ -49,14 +49,27 @@
                                         {{ $article->status }}
                                     </td>
                                     <td class="border px-2 md:px-4 py-2">
-                                        <a href="{{ route('admin.articles.edit', $article->id) }}"
-                                           class="text-blue-600 underline text-sm md:text-base">
-                                            Edit
-                                        </a>
+                                        <div class="flex item-center gap-3">
+                                            <a href="{{ route('admin.articles.edit', $article->id) }}"
+                                                class="text-blue-600 text-sm md:text-base hover:underline">
+                                                Edit
+                                            </a>
+
+                                            <form action="{{ route('admin.articles.destroy', $article->id) }}"
+                                                method="POST"
+                                                onsubmit="return confirm('Are you sure you want to delete this article');"
+                                                class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="text-red-600 text-sm md:text-base hover:underline">Delete
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
-                            @if($articles->isEmpty())
+                            @if ($articles->isEmpty())
                                 <tr>
                                     <td colspan="5" class="border px-4 py-4 text-center text-gray-500">
                                         No articles yet.

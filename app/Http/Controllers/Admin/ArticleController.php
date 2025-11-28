@@ -148,8 +148,17 @@ class ArticleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Article $article)
     {
-        //
+        // ここで画像ファイル削除したければ後から追記をする
+        // if ($article->thumbnail) {
+        //     Storage::disk('public')->delete($article->thumbnail);
+        // }
+
+        $article->delete(); // article_tagはFKのcascadeOnDeleteで一緒に消える
+
+        return redirect()
+        ->route('admin.articles.index')
+        ->with('status', 'Article deleted successfully.');
     }
 }
