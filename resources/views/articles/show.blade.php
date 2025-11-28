@@ -27,7 +27,7 @@
         @endif
 
         <div class="prose max-w-none mt-6">
-            {!! nl2br(e($article->body)) !!}
+            {!! $article->body_html !!}
         </div>
     </div>
 </x-app-layout>

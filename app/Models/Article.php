@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use League\CommonMark\CommonMarkConverter;
 
 class Article extends Model
 {
@@ -36,5 +37,21 @@ class Article extends Model
     public function scopePublished($query)
     {
         return $query->where('status', 'published');
+    }
+
+    // Markdownの本文をHTMLに変換して返すアクセサ
+    // $article->body_htmlで使える
+    public function getBodyHtmlAttribute():string
+    {
+        static $converter = null;
+
+        if ($converter === null){
+            $converter = new CommonMarkConverter([
+                'html_input' => 'escape',       // 生HTMLはエスケープ
+                'allow_unsafe_links' => false,
+            ]);
+        }
+
+        return $converter->convert($this->body ?? '')->getContent();
     }
 }

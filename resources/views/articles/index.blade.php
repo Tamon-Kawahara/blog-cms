@@ -51,8 +51,11 @@
                             @endforeach
                         </div>
 
+                        @php
+                            $excerpt = \Illuminate\Support\Str::limit(strip_tags($article->body_html), 100);
+                        @endphp
                         <p class="mt-3 text-gray-700 text-sm">
-                            {{ \Illuminate\Support\Str::limit(strip_tags($article->body), 100) }}
+                            {{ $excerpt }}
                         </p>
                     </div>
                 </div>
