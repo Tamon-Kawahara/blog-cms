@@ -50,7 +50,7 @@ class ArticleController extends Controller
             'category_id' => ['nullable', 'exists:categories,id'],
             'tags' => ['array'],
             'tags.*' => ['integer', 'exists:tags,id'],
-            'thumbnail' => ['nullable', 'image', 'max:2048'],
+            'thumbnail' => ['nullable', 'image', 'max:5120'],
         ]);
 
         // スラッグが未入力なら自動生成
@@ -119,7 +119,7 @@ class ArticleController extends Controller
             'category_id' => ['nullable', 'exists:categories,id'],
             'tags' => ['array'],
             'tags.*' => ['integer', 'exists:tags,id'],
-            'thumbnail' => ['nullable', 'image', 'max:2048'],
+            'thumbnail' => ['nullable', 'image', 'max:5120'],
             'published_at' => ['nullable', 'date'],
             'remove_thumbnail' => ['nullable', 'boolean'],
         ]);
