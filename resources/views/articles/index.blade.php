@@ -1,7 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
         <h1 class="text-2xl font-bold">
-            Articles
+            @isset($currentCategry)
+                Category: {{ $currentCategory->name }}
+            @elseif(isset($currentTag))
+                Tag: {{ $currentTag->name }}
+            @else
+                Articles
+            @endisset
         </h1>
     </x-slot>
 
@@ -25,14 +31,23 @@
 
                         <div class="text-sm text-gray-500 mt-1">
                             {{ optional($article->published_at)->format('Y-m-d') }}
-                            ／ {{ $article->category->name ?? '未分類' }}
+                            カテゴリ⇨
+                            @if ($article->category)
+                                <a href="{{ route('articles.byCategory', $article->category) }}"
+                                    class="text-gray-700 hover:underline">
+                                    {{ $article->category->name }}
+                                </a>
+                            @else
+                                未分類
+                            @endif
                         </div>
 
                         <div class="mt-2 space-x-1">
                             @foreach ($article->tags as $tag)
-                                <span class="inline-block text-xs px-2 py-1 bg-gray-100 rounded">
+                                <a href="{{ route('articles.byTag', $tag) }}"
+                                    class="inline-block text-xs px-2 py-1 bg-gray-100 rounded hover:bg-gray-200">
                                     {{ $tag->name }}
-                                </span>
+                                </a>
                             @endforeach
                         </div>
 

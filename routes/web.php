@@ -46,4 +46,10 @@ Route::get('/articles', [ArticleController::class, 'index'])
 Route::get('/articles/{article:slug}', [ArticleController::class, 'show'])
     ->name('articles.show');
 
+Route::get('/categories/{category:slug}', [ArticleController::class, 'byCategory'])
+    ->name('articles.byCategory');
+
+Route::get('/tags/{tag:slug}', [ArticleController::class, 'byTag'])
+    ->name('articles.byTag');
+
 require __DIR__ . '/auth.php';
