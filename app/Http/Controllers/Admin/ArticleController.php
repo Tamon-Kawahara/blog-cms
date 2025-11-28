@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
 {
@@ -57,9 +58,16 @@ class ArticleController extends Controller
             $validated['slug'] = Str::slug($validated['title']);
         }
 
-        // サムネ画像の保存
-        if ($validated['status'] === 'published') {
+        // 公開状態でpublished_at未設定なら今の時間
+        if ($validated['status'] === 'published' && empty($validated['published_at'])) {
             $validated['published_at'] = now();
+        }
+
+        // サムネ画像の保存処理
+        if ($request->hasFile('thumbnail')) {
+            // storage/app/public/thumbnailsに保存される
+            $path = $request->file('thumbnail')->store('thumbnails', 'public');
+            $validated['thumbnail'] = $path;
         }
 
         // 記事作成
@@ -112,17 +120,39 @@ class ArticleController extends Controller
             'tags' => ['array'],
             'tags.*' => ['integer', 'exists:tags,id'],
             'thumbnail' => ['nullable', 'image', 'max:2048'],
+            'published_at' => ['nullable', 'date'],
+            'remove_thumbnail' => ['nullable', 'boolean'],
         ]);
 
         // スラッグが未入力なら自動生成
         if (empty($validated['slug'])) {
-            $validated['slug'] = \Illuminate\Support\Str::slug($validated['title']);
+            $validated['slug'] = Str::slug($validated['title']);
+        }
+
+        $removeThumbnail = $request->boolean('remove_thumbnail');
+
+
+        if ($removeThumbnail) {
+            // サムネ削除指定がある場合
+            if ($article->thumbnail) {
+                Storage::disk('public')->delete($article->thumbnail);
+            }
+            $validated['thumbnail'] = null;
         }
 
         // サムネ画像の更新（新しいのがきた時だけ上書き）
-        if ($request->hasFile('thumbnail')) {
+        elseif ($request->hasFile('thumbnail')) {
+            // 既存のサムネがあれば削除
+            if ($article->thumbnail) {
+                Storage::disk('public')->delete($article->thumbnail);
+            }
+
+            // storage/app/public/thumbnailに保存
             $path = $request->file('thumbnail')->store('thumbnail', 'public');
             $validated['thumbnail'] = $path;
+        } else {
+            // 新しいファイルがない場合はthumbnailを更新対象から外す
+            unset($validated['thumbnail']);
         }
 
         // published_atの制御
@@ -158,7 +188,7 @@ class ArticleController extends Controller
         $article->delete(); // article_tagはFKのcascadeOnDeleteで一緒に消える
 
         return redirect()
-        ->route('admin.articles.index')
-        ->with('status', 'Article deleted successfully.');
+            ->route('admin.articles.index')
+            ->with('status', 'Article deleted successfully.');
     }
 }

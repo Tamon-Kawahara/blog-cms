@@ -88,13 +88,27 @@
                         <textarea name="body" rows="10" class="w-full rounded border-gray-300 shadow-sm">{{ old('body', $article->body) }}</textarea>
                     </div>
 
-                    {{-- Thumbnail（現状表示は後ででOK） --}}
-                    <div>
-                        <label class="block text-sm font-medium mb-1">
-                            Thumbnail
-                        </label>
-                        <input type="file" name="thumbnail" class="block w-full text-sm">
-                        {{-- 既存サムネのプレビューは、気が向いたら後で追加 --}}
+                    {{-- thumbnail --}}
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Thumbnail</label>
+
+                        @if ($article->thumbnail)
+                            <div class="mt-2">
+                                <img src="{{ asset('storage/' . $article->thumbnail) }}"
+                                    class="w-32 h-32 object-cover rounded">
+                            </div>
+                            <div class="mt-2">
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="remove_thumbnail" value="1" class="mr-2">
+                                    <span class="text-sm text-gray-700">サムネを削除する</span>
+                                </label>
+                            </div>
+                        @endif
+
+                        <input type="file" name="thumbnail" class="mt-2">
+                        @error('thumbnail')
+                            <p class="text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     {{-- Status --}}
@@ -111,7 +125,7 @@
                             </option>
                         </select>
                     </div>
-
+                    
                     <div class="flex justify-end gap-3 pt-4">
                         <a href="{{ route('admin.articles.index') }}"
                             class="px-4 py-2 rounded border border-gray-300 text-gray-700">

@@ -26,6 +26,7 @@
                                 <th class="border px-2 md:px-4 py-2">Tags</th>
                                 <th class="border px-2 md:px-4 py-2">Status</th>
                                 <th class="border px-2 md:px-4 py-2">Actions</th>
+                                <th class="border px-2 md:px-4 py-2">Thumbnail</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -66,6 +67,12 @@
                                                 </button>
                                             </form>
                                         </div>
+                                    </td>
+                                    <td class="border px-2 md:px-4 py-2">
+                                        @if ($article->thumbnail)
+                                            <img src="{{ asset('storage/' . $article->thumbnail) }}"
+                                                class="w-16 h-16 object-cover rounded">
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
