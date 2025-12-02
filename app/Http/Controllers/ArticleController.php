@@ -14,21 +14,21 @@ class ArticleController extends Controller
     public function index()
     {
         $articles = Article::published()
-        ->with(['category', 'tags'])
-        ->orderByDesc('published_at')
-        ->paginate(10);
+            ->with(['category', 'tags'])
+            ->orderByDesc('published_at')
+            ->paginate(10);
 
         // サイドバー用：公開済み記事だけカウント
-        $categories = Category::withCount(['articles' => function($query){
+        $categories = Category::withCount(['articles' => function ($query) {
             $query->where('status', 'published');
         }])
-        ->orderBy('name')
-        ->get();
+            ->orderBy('name')
+            ->get();
 
         $recentArticles = Article::published()
-        ->orderByDesc('published_at')
-        ->limit(5)
-        ->get();
+            ->orderByDesc('published_at')
+            ->limit(5)
+            ->get();
 
         return view('articles.index', compact('articles', 'categories', 'recentArticles'));
     }
@@ -40,19 +40,19 @@ class ArticleController extends Controller
         $article->load(['category', 'tags']);
 
         // 下書きだったら404にしておく（URL直撃ち対策）
-        abort_if ($article->status !== 'published',404);
+        abort_if($article->status !== 'published', 404);
 
-                // サイドバー用：公開済み記事だけカウント
-        $categories = Category::withCount(['articles' => function($query){
+        // サイドバー用：公開済み記事だけカウント
+        $categories = Category::withCount(['articles' => function ($query) {
             $query->where('status', 'published');
         }])
-        ->orderBy('name')
-        ->get();
+            ->orderBy('name')
+            ->get();
 
         $recentArticles = Article::published()
-        ->orderByDesc('published_at')
-        ->limit(5)
-        ->get();
+            ->orderByDesc('published_at')
+            ->limit(5)
+            ->get();
 
         return view('articles.show', compact('article', 'categories', 'recentArticles'));
     }
@@ -61,14 +61,28 @@ class ArticleController extends Controller
     public function byCategory(Category $category)
     {
         $articles = $category->articles()
-        ->where('status', 'published')
-        ->with(['category', 'tags'])
-        ->orderByDesc('published_at')
-        ->paginate(10);
+            ->where('status', 'published')
+            ->with(['category', 'tags'])
+            ->orderByDesc('published_at')
+            ->paginate(10);
+
+        // サイドバー用
+        $categories = Category::withCount(['articles' => function ($query) {
+            $query->where('status', 'published');
+        }])
+            ->orderBy('name')
+            ->get();
+
+        $recentArticles = Article::where('status', 'published')
+            ->orderByDesc('published_at')
+            ->limit(5)
+            ->get();
 
         return view('articles.index', [
             'articles' => $articles,
             'currentCategory' => $category,
+            'categories' => $categories,
+            'recentArticles' => $recentArticles,
         ]);
     }
 
@@ -76,14 +90,28 @@ class ArticleController extends Controller
     public function byTag(Tag $tag)
     {
         $articles = $tag->articles()
-        ->where('status', 'published')
-        ->with(['category', 'tags'])
-        ->orderByDesc('published_at')
-        ->paginate(10);
+            ->where('status', 'published')
+            ->with(['category', 'tags'])
+            ->orderByDesc('published_at')
+            ->paginate(10);
+
+        // サイドバー用
+        $categories = Category::withCount(['articles' => function ($query) {
+            $query->where('status', 'published');
+        }])
+            ->orderBy('name')
+            ->get();
+
+        $recentArticles = Article::where('status', 'published')
+            ->orderByDesc('published_at')
+            ->limit(5)
+            ->get();
 
         return view('articles.index', [
             'articles' => $articles,
             'currentTag' => $tag,
+            'categories' => $categories,
+            'recentArticles' => $recentArticles,
         ]);
     }
 }
