@@ -21,6 +21,11 @@ class Article extends Model
         'published_at',
     ];
 
+    protected $casts = [
+        'published_at' => 'datetime',
+    ];
+
+
     /** カテゴリ:1記事は1カテゴリに属する */
     public function category()
     {
@@ -41,11 +46,11 @@ class Article extends Model
 
     // Markdownの本文をHTMLに変換して返すアクセサ
     // $article->body_htmlで使える
-    public function getBodyHtmlAttribute():string
+    public function getBodyHtmlAttribute(): string
     {
         static $converter = null;
 
-        if ($converter === null){
+        if ($converter === null) {
             $converter = new CommonMarkConverter([
                 'html_input' => 'escape',       // 生HTMLはエスケープ
                 'allow_unsafe_links' => false,

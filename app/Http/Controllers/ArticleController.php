@@ -18,20 +18,43 @@ class ArticleController extends Controller
         ->orderByDesc('published_at')
         ->paginate(10);
 
-        return view('articles.index', compact('articles'));
+        // サイドバー用：公開済み記事だけカウント
+        $categories = Category::withCount(['articles' => function($query){
+            $query->where('status', 'published');
+        }])
+        ->orderBy('name')
+        ->get();
+
+        $recentArticles = Article::published()
+        ->orderByDesc('published_at')
+        ->limit(5)
+        ->get();
+
+        return view('articles.index', compact('articles', 'categories', 'recentArticles'));
     }
 
     // 記事詳細
     public function show(Article $article)
     {
-        // slugでハインドされて飛んでくる
+        // 関連をロードしておく（N＋1対策）
+        $article->load(['category', 'tags']);
 
         // 下書きだったら404にしておく（URL直撃ち対策）
-        if ($article->status !== 'published'){
-            abort(404);
-        }
+        abort_if ($article->status !== 'published',404);
 
-        return view('articles.show', compact('article'));
+                // サイドバー用：公開済み記事だけカウント
+        $categories = Category::withCount(['articles' => function($query){
+            $query->where('status', 'published');
+        }])
+        ->orderBy('name')
+        ->get();
+
+        $recentArticles = Article::published()
+        ->orderByDesc('published_at')
+        ->limit(5)
+        ->get();
+
+        return view('articles.show', compact('article', 'categories', 'recentArticles'));
     }
 
     // カテゴリ別記事一覧
