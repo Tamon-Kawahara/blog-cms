@@ -52,7 +52,7 @@
 
                                             @if ($article->category)
                                                 <span
-                                                    class="inline-flex items-center px-2 py-0.5 rounded-full border border-gray-200 text-[11px] text-gray-700">
+                                                    class="inline-flex items-center px-2 py-0.5 rounded-full border border-blue-200 text-[10px] text-white bg-blue-500">
                                                     {{ $article->category->name }}
                                                 </span>
                                             @else
@@ -64,7 +64,7 @@
                                             {{ $article->title }}
                                         </h2>
 
-                                        {{-- @if ($article->tags->isNotEmpty())
+                                        @if ($article->tags->isNotEmpty())
                                             <div class="mt-2 flex flex-wrap gap-1">
                                                 @foreach ($article->tags as $tag)
                                                     <span
@@ -73,7 +73,7 @@
                                                     </span>
                                                 @endforeach
                                             </div>
-                                        @endif --}}
+                                        @endif
 
                                         {{-- <p class="mt-3 text-sm text-gray-700 line-clamp-3">
                                             {{ $excerpt }}
@@ -85,8 +85,9 @@
 
                         {{-- ページネーション --}}
                         <div class="mt-8">
-                            {{ $articles->links() }}
+                            {{ $articles->withQueryString()->links() }}
                         </div>
+
                     @endif
                 </div>
 

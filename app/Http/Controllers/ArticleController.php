@@ -10,17 +10,26 @@ use App\Models\Tag;
 
 class ArticleController extends Controller
 {
-    // 記事一覧（公開済みだけ）
-    public function index()
+    // 記事一覧（公開済み+検索対応）
+    public function index(Request $request)
     {
-        $articles = Article::published()
+        $query = Article::published()
             ->with(['category', 'tags'])
-            ->orderByDesc('published_at')
-            ->paginate(10);
+            ->orderByDesc('published_at');
+
+        // 検索キーワード取得
+        if ($search = $request->input('q')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('body', 'like', '%' . $search . '%');
+            });
+        }
+
+        $articles = $query->paginate(10);
 
         // サイドバー用：公開済み記事だけカウント
-        $categories = Category::withCount(['articles' => function ($query) {
-            $query->where('status', 'published');
+        $categories = Category::withCount(['articles' => function ($q) {
+            $q->where('status', 'published');
         }])
             ->orderBy('name')
             ->get();
@@ -30,7 +39,11 @@ class ArticleController extends Controller
             ->limit(5)
             ->get();
 
-        return view('articles.index', compact('articles', 'categories', 'recentArticles'));
+        return view('articles.index', [
+            'articles' => $articles,
+            'categories' => $categories,
+            'recentArticles' => $recentArticles,
+        ]);
     }
 
     // 記事詳細

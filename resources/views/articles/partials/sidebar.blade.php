@@ -1,4 +1,20 @@
 <aside class="mt-8 lg:mt-0 lg:w-64 space-y-6">
+    {{-- 検索フォーム --}}
+    <section class="bg-white rounded-lg shadow-sm p-4">
+        <h2 class="text-sm font-semibold mb-3 border-l-4 border-blue-500 pl-2">
+            検索
+        </h2>
+
+        <form method="GET" action="{{ route('articles.index') }}" class="space-y-2">
+            <input type="text" name="q" value="{{ request('q') }}" placeholder="キーワードを入力"
+                class="w-full px-3 py-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            {{-- Enterで送信でもいいけど、ボタンも一応用意 --}}
+            <button type="submit"
+                class="w-full inline-flex justify-center px-3 py-2 text-xs font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700">
+                検索
+            </button>
+        </form>
+    </section>
     {{-- カテゴリ一覧 --}}
     @isset($categories)
         <section class="bg-white rounded-lg shadow-sm p-4">
