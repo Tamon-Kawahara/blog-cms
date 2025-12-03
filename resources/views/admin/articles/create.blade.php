@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Create Article
+            記事を新規作成
         </h2>
     </x-slot>
 
@@ -9,7 +9,7 @@
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
 
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <h1 class="text-2xl font-bold mb-6">Create Article</h1>
+                <h1 class="text-2xl font-bold mb-6">記事を新規作成</h1>
 
                 {{-- エラー表示 --}}
                 @if ($errors->any())
@@ -22,111 +22,108 @@
                     </div>
                 @endif
 
-                <form action="{{ route('admin.articles.store') }}"
-                      method="POST"
-                      enctype="multipart/form-data"
-                      class="space-y-4">
+                <form action="{{ route('admin.articles.store') }}" method="POST" enctype="multipart/form-data"
+                    class="space-y-4">
                     @csrf
 
-                    {{-- 以下、さっきのフォーム部分そのまま --}}
-                    {{-- Title --}}
+                    {{-- タイトル --}}
                     <div>
                         <label class="block text-sm font-medium mb-1">
-                            Title
+                            タイトル
                         </label>
-                        <input type="text" name="title"
-                               value="{{ old('title') }}"
-                               class="w-full rounded border-gray-300 shadow-sm">
+                        <input type="text" name="title" value="{{ old('title') }}"
+                            class="w-full rounded border-gray-300 shadow-sm">
                     </div>
 
-                    {{-- Slug --}}
+                    {{-- スラッグ --}}
                     <div>
                         <label class="block text-sm font-medium mb-1">
-                            Slug <span class="text-xs text-gray-500">(empty = auto generate)</span>
+                            スラッグ
+                            <span class="text-xs text-gray-500">
+                                （未入力の場合は自動生成）
+                            </span>
                         </label>
-                        <input type="text" name="slug"
-                               value="{{ old('slug') }}"
-                               class="w-full rounded border-gray-300 shadow-sm">
+                        <input type="text" name="slug" value="{{ old('slug') }}"
+                            class="w-full rounded border-gray-300 shadow-sm">
                     </div>
 
-                    {{-- Category --}}
+                    {{-- カテゴリー --}}
                     <div>
                         <label class="block text-sm font-medium mb-1">
-                            Category
+                            カテゴリー
                         </label>
-                        <select name="category_id"
-                                class="w-full rounded border-gray-300 shadow-sm">
-                            <option value="">No category</option>
+                        <select name="category_id" class="w-full rounded border-gray-300 shadow-sm">
+                            <option value="">カテゴリーなし</option>
                             @foreach ($categories as $category)
-                                <option value="{{ $category->id }}"
-                                    @selected(old('category_id') == $category->id)>
+                                <option value="{{ $category->id }}" @selected(old('category_id') == $category->id)>
                                     {{ $category->name }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
 
-                    {{-- Tags --}}
+                    {{-- タグ --}}
                     <div>
                         <label class="block text-sm font-medium mb-1">
-                            Tags
+                            タグ
                         </label>
                         <div class="flex flex-wrap gap-2">
                             @foreach ($tags as $tag)
                                 <label class="inline-flex items-center text-sm">
-                                    <input type="checkbox"
-                                           name="tags[]"
-                                           value="{{ $tag->id }}"
-                                           class="mr-1"
-                                           @checked(collect(old('tags', []))->contains($tag->id))>
+                                    <input type="checkbox" name="tags[]" value="{{ $tag->id }}" class="mr-1"
+                                        @checked(collect(old('tags', []))->contains($tag->id))>
                                     <span>{{ $tag->name }}</span>
                                 </label>
                             @endforeach
                         </div>
                         @if ($tags->isEmpty())
                             <p class="text-xs text-gray-500 mt-1">
-                                No tags yet. You can create them later from the Tags admin screen.
+                                まだタグが登録されていません。タグ管理画面から追加できます。
                             </p>
                         @endif
                     </div>
 
-                    {{-- Body --}}
+                    {{-- 本文 --}}
                     <div>
                         <label class="block text-sm font-medium mb-1">
-                            Body
+                            本文
                         </label>
-                        <textarea name="body" rows="10"
-                                  class="w-full rounded border-gray-300 shadow-sm">{{ old('body') }}</textarea>
+                        <textarea name="body" rows="10" class="w-full rounded border-gray-300 shadow-sm">{{ old('body') }}</textarea>
                     </div>
 
-                    {{-- Thumbnail --}}
+                    {{-- サムネイル --}}
                     <div>
                         <label class="block text-sm font-medium mb-1">
-                            Thumbnail
+                            サムネイル
                         </label>
                         <input type="file" name="thumbnail" class="block w-full text-sm">
+                        @error('thumbnail')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    {{-- Status --}}
+                    {{-- 公開状態 --}}
                     <div>
                         <label class="block text-sm font-medium mb-1">
-                            Status
+                            公開状態
                         </label>
-                        <select name="status"
-                                class="w-full rounded border-gray-300 shadow-sm">
-                            <option value="draft"     @selected(old('status') === 'draft')>Draft</option>
-                            <option value="published" @selected(old('status') === 'published')>Published</option>
+                        <select name="status" class="w-full rounded border-gray-300 shadow-sm">
+                            <option value="draft" @selected(old('status') === 'draft')>
+                                下書き
+                            </option>
+                            <option value="published" @selected(old('status') === 'published')>
+                                公開
+                            </option>
                         </select>
                     </div>
 
                     <div class="flex justify-end gap-3 pt-4">
                         <a href="{{ route('admin.articles.index') }}"
-                           class="px-4 py-2 rounded border border-gray-300 text-gray-700">
-                            Cancel
+                            class="px-4 py-2 rounded border border-gray-300 text-gray-700">
+                            キャンセル
                         </a>
-                        <button type="submit"
-                                class="px-4 py-2 rounded bg-blue-600 text-white">
-                            Save
+                        <button type="submit" class="px-4 py-2 rounded bg-blue-600 text-white">
+                            保存する
                         </button>
                     </div>
                 </form>

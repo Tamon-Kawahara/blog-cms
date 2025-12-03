@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Tags
+            タグ管理
         </h2>
     </x-slot>
 
@@ -10,10 +10,11 @@
 
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h1 class="text-2xl font-bold">Tags</h1>
+                    <h1 class="text-2xl font-bold">タグ一覧</h1>
 
-                    <a href="{{ route('admin.tags.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded">
-                        Create New Tag
+                    <a href="{{ route('admin.tags.create') }}"
+                        class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">
+                        タグを追加
                     </a>
                 </div>
 
@@ -27,13 +28,13 @@
                     <table class="min-w-full border-collapse text-sm md:text-base">
                         <thead>
                             <tr class="bg-gray-100">
-                                <th class="border px-2 md:px-4 py-2 w-1/2">Name</th>
-                                <th class="border px-2 md:px-4 py-2 w-1/2">Slug</th>
-                                <th class="border px-2 md:px-4 py-2">Actions</th>
+                                <th class="border px-2 md:px-4 py-2 w-1/2 text-left">名前</th>
+                                <th class="border px-2 md:px-4 py-2 w-1/2 text-left">スラッグ</th>
+                                <th class="border px-2 md:px-4 py-2 text-left">操作</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($tags as $tag)
+                            @forelse ($tags as $tag)
                                 <tr class="hover:bg-gray-50">
                                     <td class="border px-2 md:px-4 py-2">
                                         {{ $tag->name }}
@@ -45,30 +46,28 @@
                                         <div class="flex items-center gap-3">
                                             <a href="{{ route('admin.tags.edit', $tag->id) }}"
                                                 class="text-blue-600 text-sm md:text-base hover:underline">
-                                                Edit
+                                                編集
                                             </a>
 
                                             <form action="{{ route('admin.tags.destroy', $tag->id) }}" method="POST"
-                                                onsubmit="return confirm('Delete this tag?');" class="inline">
+                                                onsubmit="return confirm('このタグを削除してもよろしいですか？');" class="inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
                                                     class="text-red-600 text-sm md:text-base hover:underline">
-                                                    Delete
+                                                    削除
                                                 </button>
                                             </form>
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
-
-                            @if ($tags->isEmpty())
+                            @empty
                                 <tr>
                                     <td colspan="3" class="border px-4 py-4 text-center text-gray-500">
-                                        No tags yet.
+                                        タグがまだ登録されていません。
                                     </td>
                                 </tr>
-                            @endif
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
