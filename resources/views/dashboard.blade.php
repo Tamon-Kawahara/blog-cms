@@ -1,8 +1,17 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            ダッシュボード
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                ダッシュボード
+            </h2>
+
+            <div class="flex items-center gap-2">
+                <a href="{{ url('/') }}" target="_blank"
+                    class="inline-flex items-center px-3 py-2 text-xs sm:text-sm rounded-md border border-gray-300 text-gray-700 bg-white hover:bg-gray-50">
+                    公開サイトを見る
+                </a>
+            </div>
+        </div>
     </x-slot>
 
     <div class="py-12">
@@ -34,6 +43,11 @@
                             記事の分類に使われます
                         @endif
                     </p>
+                    <div class="mt-3 text-right">
+                        <a href="{{ route('admin.categories.index') }}" class="text-xs text-blue-600 hover:underline">
+                            カテゴリー一覧へ
+                        </a>
+                    </div>
                 </div>
 
                 {{-- タグ --}}
@@ -47,6 +61,11 @@
                             記事の特徴づけに使われます
                         @endif
                     </p>
+                    <div class="mt-3 text-right">
+                        <a href="{{ route('admin.tags.index') }}" class="text-xs text-blue-600 hover:underline">
+                            タグ一覧へ
+                        </a>
+                    </div>
                 </div>
             </div>
 

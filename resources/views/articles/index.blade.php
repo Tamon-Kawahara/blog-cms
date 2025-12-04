@@ -1,14 +1,32 @@
 <x-app-layout>
     <x-slot name="header">
-        <h1 class="text-2xl font-bold text-gray-900">
-            @if (isset($currentCategory))
-                カテゴリー: {{ $currentCategory->name }}
-            @elseif (isset($currentTag))
-                タグ: {{ $currentTag->name }}
-            @else
-                記事一覧
-            @endif
-        </h1>
+        <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-gray-900">
+                @if (isset($currentCategory))
+                    カテゴリー: {{ $currentCategory->name }}
+                @elseif (isset($currentTag))
+                    タグ: {{ $currentTag->name }}
+                @else
+                    記事一覧
+                @endif
+            </h1>
+
+            <div class="flex items-center gap-2">
+                {{-- 公開サイトのトップへ --}}
+                <a href="{{ url('/') }}"
+                    class="inline-flex items-center px-3 py-2 text-xs sm:text-sm rounded-md border border-gray-300 text-gray-700 bg-white hover:bg-gray-50">
+                    トップに戻る
+                </a>
+
+                {{-- ログインしている場合だけ管理画面への導線も --}}
+                @auth
+                    <a href="{{ route('dashboard') }}"
+                        class="inline-flex items-center px-3 py-2 text-xs sm:text-sm rounded-md bg-gray-800 text-white hover:bg-gray-900">
+                        管理画面へ
+                    </a>
+                @endauth
+            </div>
+        </div>
     </x-slot>
 
     <div class="bg-gray-100">
