@@ -43,9 +43,60 @@
                     </div>
                 </div>
 
-                {{-- 検索フォーム（前回追加したやつがあるならそれをここに残す） --}}
-                {{-- ここは多聞がもう入れてる版があるはずだから省略しないでちゃんと残してね --}}
+                {{-- 検索フォーム --}}
+                <form method="GET" action="{{ route('admin.articles.index') }}" class="mb-6">
+                    <div class="bg-gray-50 border border-gray-200 rounded-md p-4 flex flex-wrap items-end gap-4">
 
+                        {{-- キーワード --}}
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">
+                                キーワード
+                            </label>
+                            <input type="text" name="q" value="{{ request('q') }}"
+                                class="border-gray-300 rounded-md text-sm" placeholder="タイトル・本文から検索">
+                        </div>
+
+                        {{-- ステータス --}}
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">
+                                ステータス
+                            </label>
+                            <select name="status" class="border-gray-300 rounded-md text-sm">
+                                <option value="">すべて</option>
+                                <option value="published" @selected(request('status') === 'published')>公開</option>
+                                <option value="draft" @selected(request('status') === 'draft')>下書き</option>
+                            </select>
+                        </div>
+
+                        {{-- カテゴリー --}}
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">
+                                カテゴリー
+                            </label>
+                            <select name="category_id" class="border-gray-300 rounded-md text-sm">
+                                <option value="">すべて</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}" @selected(request('category_id') == $category->id)>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- ボタン --}}
+                        <div class="flex gap-2">
+                            <button type="submit"
+                                class="inline-flex items-center px-4 py-2 rounded-md bg-blue-600 text-white text-sm hover:bg-blue-700">
+                                検索
+                            </button>
+                            <a href="{{ route('admin.articles.index') }}"
+                                class="inline-flex items-center px-3 py-2 rounded-md bg-white border border-gray-300 text-gray-700 text-xs hover:bg-gray-50">
+                                条件をリセット
+                            </a>
+                        </div>
+                    </div>
+                </form>
+                
                 <div class="overflow-x-auto">
                     <table class="min-w-full border-collapse text-sm md:text-base">
                         <thead>

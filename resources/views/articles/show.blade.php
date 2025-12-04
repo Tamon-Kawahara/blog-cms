@@ -8,28 +8,29 @@
 
     <div class="bg-gray-100">
         <div class="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+            {{-- パンくず --}}
+            <nav class="text-sm text-gray-500 mb-2">
+                <a href="{{ route('articles.index') }}" class="hover:underline">
+                    ホーム
+                </a>
+
+                @if ($article->category)
+                    <span class="mx-1">/</span>
+                    <a href="{{ route('articles.byCategory', $article->category) }}" class="hover:underline">
+                        {{ $article->category->name }}
+                    </a>
+                @endif
+
+                <span class="mx-1">/</span>
+                <span class="text-gray-700">
+                    {{ $article->title }}
+                </span>
+            </nav>
+            
             <div class="lg:flex lg:items-start lg:gap-8">
                 {{-- メインカラム：記事＋関連記事 --}}
                 <div class="flex-1 space-y-8">
 
-                    {{-- パンくず --}}
-                    <nav class="text-sm text-gray-500 mb-2">
-                        <a href="{{ route('articles.index') }}" class="hover:underline">
-                            ホーム
-                        </a>
-
-                        @if ($article->category)
-                            <span class="mx-1">/</span>
-                            <a href="{{ route('articles.byCategory', $article->category) }}" class="hover:underline">
-                                {{ $article->category->name }}
-                            </a>
-                        @endif
-
-                        <span class="mx-1">/</span>
-                        <span class="text-gray-700">
-                            {{ $article->title }}
-                        </span>
-                    </nav>
 
                     {{-- メイン記事 --}}
                     <article class="bg-white rounded-lg shadow-sm overflow-hidden">

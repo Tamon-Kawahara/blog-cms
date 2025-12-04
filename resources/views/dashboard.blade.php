@@ -79,10 +79,6 @@
                         class="inline-flex items-center px-4 py-2 rounded-md bg-blue-600 text-white text-sm hover:bg-blue-700">
                         記事を追加
                     </a>
-                    <a href="{{ route('admin.articles.index') }}"
-                        class="inline-flex items-center px-4 py-2 rounded-md bg-gray-100 text-gray-800 text-sm hover:bg-gray-200">
-                        記事一覧（管理）
-                    </a>
                     <a href="{{ route('admin.categories.create') }}"
                         class="inline-flex items-center px-4 py-2 rounded-md bg-gray-100 text-gray-800 text-sm hover:bg-gray-200">
                         カテゴリーを追加
