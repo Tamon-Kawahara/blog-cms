@@ -15,13 +15,36 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::with(['category', 'tags'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = Article::with(['category', 'tags'])
+        ->orderByDesc('published_at')
+        ->orderByDesc('created_at');
 
-        return view('admin.articles.index', compact('articles'));
+        // キーワード検索（タイトル・本文）
+        if ($keyword = $request->input('q')){
+            $query->where(function ($q) use ($keyword){
+                $q->where('title', 'like', '%' . $keyword . '%')
+                ->orWhere('body', 'like', '%' . $keyword . '%'); 
+            });
+        }
+
+        // ステータス（published / draft）
+        if ($status = $request->input('status')){
+            $query->where('status', $status);
+        }
+
+        // カテゴリーで絞り込み
+        if ($categoryId = $request->input('category_id')){
+            $query->where('category_id', $categoryId);
+        }
+
+        // paginateを10件で表示
+        $articles = $query->paginate(10)->withQueryString();
+
+        $categories = Category::orderBy('name')->get();
+
+        return view('admin.articles.index', compact('articles', 'categories'));
     }
 
     /**

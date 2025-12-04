@@ -10,24 +10,43 @@
 
             {{-- 上部のサマリーカード --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {{-- 記事数 --}}
                 <div class="bg-white shadow-sm sm:rounded-lg p-6">
                     <h3 class="text-sm font-medium text-gray-500">記事数</h3>
                     <p class="mt-2 text-3xl font-bold text-gray-900">{{ $totalArticles }}</p>
                     <p class="mt-1 text-xs text-gray-500">
-                        公開 {{ $publishedArticles }} / 下書き {{ $draftArticles }}
+                        @if ($totalArticles === 0)
+                            まだ記事がありません。まずは最初の1件を作成してみましょう。
+                        @else
+                            公開 {{ $publishedArticles }} / 下書き {{ $draftArticles }}
+                        @endif
                     </p>
                 </div>
 
+                {{-- カテゴリー --}}
                 <div class="bg-white shadow-sm sm:rounded-lg p-6">
                     <h3 class="text-sm font-medium text-gray-500">カテゴリー</h3>
                     <p class="mt-2 text-3xl font-bold text-gray-900">{{ $categoriesCount }}</p>
-                    <p class="mt-1 text-xs text-gray-500">記事の分類に使われます</p>
+                    <p class="mt-1 text-xs text-gray-500">
+                        @if ($categoriesCount === 0)
+                            まだカテゴリーがありません。あとからでも整理できます。
+                        @else
+                            記事の分類に使われます
+                        @endif
+                    </p>
                 </div>
 
+                {{-- タグ --}}
                 <div class="bg-white shadow-sm sm:rounded-lg p-6">
                     <h3 class="text-sm font-medium text-gray-500">タグ</h3>
                     <p class="mt-2 text-3xl font-bold text-gray-900">{{ $tagsCount }}</p>
-                    <p class="mt-1 text-xs text-gray-500">記事の特徴づけに使われます</p>
+                    <p class="mt-1 text-xs text-gray-500">
+                        @if ($tagsCount === 0)
+                            まだタグがありません。細かく分類したくなったら追加しましょう。
+                        @else
+                            記事の特徴づけに使われます
+                        @endif
+                    </p>
                 </div>
             </div>
 
@@ -63,9 +82,13 @@
                 </h3>
 
                 @if ($recentArticles->isEmpty())
-                    <p class="text-sm text-gray-500">
-                        まだ記事がありません。
+                    <p class="text-sm text-gray-500 mb-4">
+                        まだ記事がありません。まずは最初の記事を作成してみましょう。
                     </p>
+                    <a href="{{ route('admin.articles.create') }}"
+                        class="inline-flex items-center px-4 py-2 rounded-md bg-blue-600 text-white text-sm hover:bg-blue-700">
+                        記事を追加する
+                    </a>
                 @else
                     <ul class="divide-y divide-gray-100">
                         @foreach ($recentArticles as $article)
