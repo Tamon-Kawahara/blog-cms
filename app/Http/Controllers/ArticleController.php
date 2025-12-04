@@ -67,7 +67,44 @@ class ArticleController extends Controller
             ->limit(5)
             ->get();
 
-        return view('articles.show', compact('article', 'categories', 'recentArticles'));
+        // 前の記事（公開済み+現在より古い）
+        $previousArticle = Article::published()
+            ->where(function ($q) use ($article) {
+                $q->where('published_at', '<', $article->published_at)
+                    ->orWhere(function ($q2) use ($article) {
+                        $q2->where('published_at', $article->published_at)
+                            ->where('id', '<', $article->id);
+                    });
+            })
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->first();
+
+        // 次の記事（公開済み+現在より新しい）
+        $nextArticle = Article::published()
+            ->where('published_at', '>', $article->published_at)
+            ->orderBy('published_at')
+            ->first();
+
+        // 関連記事(同じカテゴリー・自分以外・公開済み)
+        $relatedArticles = Article::published()
+            ->where('id', '!=', $article->id)
+            ->when($article->category_id, function ($q) use ($article) {
+                $q->where('category_id', $article->category_id);
+            })
+            ->orderByDesc('published_at')
+            ->limit(4)
+            ->get();
+
+        return view('articles.show', [
+            'article' => $article,
+            'categories' => $categories,
+            'recentArticles' => $recentArticles,
+            'previousArticle' => $previousArticle,
+            'nextArticle' => $nextArticle,
+            'relatedArticles' => $relatedArticles,
+
+        ]);
     }
 
     // カテゴリ別記事一覧
