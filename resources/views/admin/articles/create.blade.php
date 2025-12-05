@@ -83,13 +83,19 @@
                         @endif
                     </div>
 
-                    {{-- 本文 --}}
+                    {{-- 本文（Markdown） --}}
                     <div>
                         <label class="block text-sm font-medium mb-1">
-                            本文
+                            本文（Markdown）
                         </label>
-                        <textarea name="body" rows="10" class="w-full rounded border-gray-300 shadow-sm">{{ old('body') }}</textarea>
+                        <textarea name="body" rows="12" data-markdown-editor class="w-full rounded border-gray-300 shadow-sm text-sm">{{ old('body') }}</textarea>
                     </div>
+
+                    @push('scripts')
+                        <script>
+                            window.initMarkdownEditor && window.initMarkdownEditor();
+                        </script>
+                    @endpush
 
                     {{-- サムネイル --}}
                     <div>

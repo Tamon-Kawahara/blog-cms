@@ -1,5 +1,4 @@
 <x-app-layout>
-    {{-- 上のバーのタイトルはシンプルに --}}
     <x-slot name="header">
         <h1 class="text-xl font-semibold text-gray-900">
             記事詳細
@@ -30,7 +29,6 @@
             <div class="lg:flex lg:items-start lg:gap-8">
                 {{-- メインカラム：記事＋関連記事 --}}
                 <div class="flex-1 space-y-8">
-
 
                     {{-- メイン記事 --}}
                     <article class="bg-white rounded-lg shadow-sm overflow-hidden">

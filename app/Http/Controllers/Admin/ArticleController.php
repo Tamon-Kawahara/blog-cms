@@ -18,24 +18,24 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $query = Article::with(['category', 'tags'])
-        ->orderByDesc('published_at')
-        ->orderByDesc('created_at');
+            ->orderByDesc('published_at')
+            ->orderByDesc('created_at');
 
         // キーワード検索（タイトル・本文）
-        if ($keyword = $request->input('q')){
-            $query->where(function ($q) use ($keyword){
+        if ($keyword = $request->input('q')) {
+            $query->where(function ($q) use ($keyword) {
                 $q->where('title', 'like', '%' . $keyword . '%')
-                ->orWhere('body', 'like', '%' . $keyword . '%'); 
+                    ->orWhere('body', 'like', '%' . $keyword . '%');
             });
         }
 
         // ステータス（published / draft）
-        if ($status = $request->input('status')){
+        if ($status = $request->input('status')) {
             $query->where('status', $status);
         }
 
         // カテゴリーで絞り込み
-        if ($categoryId = $request->input('category_id')){
+        if ($categoryId = $request->input('category_id')) {
             $query->where('category_id', $categoryId);
         }
 
@@ -75,6 +75,9 @@ class ArticleController extends Controller
             'tags.*' => ['integer', 'exists:tags,id'],
             'thumbnail' => ['nullable', 'image', 'max:5120'],
         ]);
+
+        // MarkdownをHTMLに変換してbody_htmlに入れる
+        $validated['body_html'] = Str::markdown($validated['body'] ?? '');
 
         // スラッグが未入力なら自動生成
         if (empty($validated['slug'])) {
@@ -146,6 +149,9 @@ class ArticleController extends Controller
             'published_at' => ['nullable', 'date'],
             'remove_thumbnail' => ['nullable', 'boolean'],
         ]);
+
+        // MarkdownをHTMLに変換してbody_htmlに入れる
+        $validated['body_html'] = Str::markdown($validated['body'] ?? '');
 
         // スラッグが未入力なら自動生成
         if (empty($validated['slug'])) {

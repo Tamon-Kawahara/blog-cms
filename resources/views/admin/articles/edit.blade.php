@@ -88,13 +88,37 @@
                         @endif
                     </div>
 
-                    {{-- 本文 --}}
+                    {{-- 本文（Markdown） --}}
                     <div>
                         <label class="block text-sm font-medium mb-1">
-                            本文
+                            本文（Markdown）
                         </label>
-                        <textarea name="body" rows="10" class="w-full rounded border-gray-300 shadow-sm">{{ old('body', $article->body) }}</textarea>
+
+                        @php
+                            // まずは old() を最優先
+                            $bodyValue = old('body');
+
+                            // バリデーションエラーじゃなければ、記事の値から決める
+                            if ($bodyValue === null) {
+                                // いままでのテキストが body に入ってるならそれを使う
+                                $bodyValue = $article->body ?? '';
+
+                                // body が空で、body_html だけ入っている古い記事の救済
+                                if ($bodyValue === '' && !empty($article->body_html)) {
+                                    // HTMLタグをざっくり落としてテキストにする（完璧じゃなくてOK）
+                                    $bodyValue = strip_tags($article->body_html);
+                                }
+                            }
+                        @endphp
+
+                        <textarea name="body" rows="12" data-markdown-editor class="w-full rounded border-gray-300 shadow-sm text-sm">{{ $bodyValue }}</textarea>
                     </div>
+
+                    @push('scripts')
+                        <script>
+                            window.initMarkdownEditor && window.initMarkdownEditor();
+                        </script>
+                    @endpush
 
                     {{-- サムネイル --}}
                     <div class="mb-4">
