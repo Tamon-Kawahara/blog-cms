@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
                 {{-- ヘッダー行 --}}
-                <div class="flex justify-between items-center mb-4">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
                     <div class="flex flex-col gap-1">
                         <h1 class="text-2xl font-bold">記事一覧</h1>
 
@@ -48,12 +48,12 @@
                     <div class="bg-gray-50 border border-gray-200 rounded-md p-4 flex flex-wrap items-end gap-4">
 
                         {{-- キーワード --}}
-                        <div>
+                        <div class="flex-1 min-w-[180px]">
                             <label class="block text-xs font-medium text-gray-600 mb-1">
                                 キーワード
                             </label>
                             <input type="text" name="q" value="{{ request('q') }}"
-                                class="border-gray-300 rounded-md text-sm" placeholder="タイトル・本文から検索">
+                                class="w-full border-gray-300 rounded-md text-sm" placeholder="タイトル・本文から検索">
                         </div>
 
                         {{-- ステータス --}}
@@ -96,31 +96,77 @@
                         </div>
                     </div>
                 </form>
-                
+
+                {{-- 一覧テーブル --}}
                 <div class="overflow-x-auto">
-                    <table class="min-w-full border-collapse text-sm md:text-base">
+                    <table class="min-w-[720px] md:min-w-full border-collapse text-sm md:text-base">
                         <thead>
                             <tr class="bg-gray-100">
-                                <th class="border px-2 md:px-4 py-2 text-left">タイトル</th>
-                                <th class="border px-2 md:px-4 py-2 text-left">カテゴリー</th>
-                                <th class="border px-2 md:px-4 py-2 text-left">タグ</th>
-                                <th class="border px-2 md:px-4 py-2 text-left">公開状態</th>
-                                <th class="border px-2 md:px-4 py-2 text-left">操作</th>
-                                <th class="border px-2 md:px-4 py-2 text-left">サムネイル</th>
+                                <th class="border px-2 md:px-4 py-2 text-left">
+                                    タイトル
+                                </th>
+                                <th class="border px-2 md:px-4 py-2 text-left hidden sm:table-cell">
+                                    カテゴリー
+                                </th>
+                                <th class="border px-2 md:px-4 py-2 text-left hidden md:table-cell">
+                                    タグ
+                                </th>
+                                <th class="border px-2 md:px-4 py-2 text-left w-24">
+                                    公開状態
+                                </th>
+                                <th class="border px-2 md:px-4 py-2 text-left w-24">
+                                    操作
+                                </th>
+                                <th class="border px-2 md:px-4 py-2 text-left hidden md:table-cell">
+                                    サムネイル
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($articles as $article)
                                 <tr class="hover:bg-gray-50">
-                                    <td class="border px-2 md:px-4 py-2">
-                                        {{ $article->title }}
+                                    {{-- タイトル --}}
+                                    <td class="border px-2 md:px-4 py-2 align-top">
+                                        <div class="font-medium text-gray-900 text-sm md:text-base">
+                                            {{ $article->title }}
+                                        </div>
+
+                                        {{-- スマホ用：サムネ + カテゴリ・タグの簡易表示 --}}
+                                        <div class="mt-2 flex items-start gap-3 sm:hidden">
+                                            @if ($article->thumbnail)
+                                                <div class="flex-shrink-0">
+                                                    <img src="{{ asset('storage/' . $article->thumbnail) }}"
+                                                        alt="{{ $article->title }}"
+                                                        class="w-12 h-12 object-cover rounded">
+                                                </div>
+                                            @endif
+
+                                            <div class="space-y-1 text-xs text-gray-500">
+                                                @if ($article->category)
+                                                    <div>カテゴリ：{{ $article->category->name }}</div>
+                                                @endif
+                                                @if ($article->tags->isNotEmpty())
+                                                    <div class="flex flex-wrap">
+                                                        <span class="mr-1">タグ：</span>
+                                                        @foreach ($article->tags as $tag)
+                                                            <span
+                                                                class="inline-block bg-gray-200 px-1 py-0.5 rounded mr-1 mb-0.5">
+                                                                {{ $tag->name }}
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </td>
 
-                                    <td class="border px-2 md:px-4 py-2">
+                                    {{-- カテゴリー（sm以上） --}}
+                                    <td class="border px-2 md:px-4 py-2 hidden sm:table-cell align-top">
                                         {{ $article->category->name ?? '—' }}
                                     </td>
 
-                                    <td class="border px-2 md:px-4 py-2">
+                                    {{-- タグ（md以上） --}}
+                                    <td class="border px-2 md:px-4 py-2 hidden md:table-cell align-top">
                                         @forelse ($article->tags as $tag)
                                             <span
                                                 class="inline-block text-xs md:text-sm bg-gray-200 px-2 py-1 rounded mr-1 mb-1">
@@ -131,7 +177,8 @@
                                         @endforelse
                                     </td>
 
-                                    <td class="border px-2 md:px-4 py-2">
+                                    {{-- 公開状態 --}}
+                                    <td class="border px-2 md:px-4 py-2 align-top">
                                         @if ($article->status === 'published')
                                             <span
                                                 class="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-green-50 text-green-700">
@@ -145,8 +192,9 @@
                                         @endif
                                     </td>
 
-                                    <td class="border px-2 md:px-4 py-2">
-                                        <div class="flex items-center gap-3">
+                                    {{-- 操作 --}}
+                                    <td class="border px-2 md:px-4 py-2 align-top">
+                                        <div class="flex flex-col gap-1">
                                             <a href="{{ route('admin.articles.edit', $article->id) }}"
                                                 class="text-blue-600 text-sm md:text-base hover:underline">
                                                 編集
@@ -165,7 +213,8 @@
                                         </div>
                                     </td>
 
-                                    <td class="border px-2 md:px-4 py-2">
+                                    {{-- サムネイル（md以上） --}}
+                                    <td class="border px-2 md:px-4 py-2 hidden md:table-cell align-top">
                                         @if ($article->thumbnail)
                                             <img src="{{ asset('storage/' . $article->thumbnail) }}"
                                                 alt="{{ $article->title }}" class="w-16 h-16 object-cover rounded">
@@ -184,6 +233,7 @@
                         </tbody>
                     </table>
                 </div>
+
                 <div class="mt-4">
                     {{ $articles->links() }}
                 </div>
