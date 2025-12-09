@@ -65,15 +65,17 @@ Markdown 対応のエディタや、ダッシュボード・検索機能など�
 
 ## 技術スタック
 
-技術 内容  
-Laravel 10 バックエンドフレームワーク  
-Breeze 認証機能（ログイン / 登録 / パスワード管理）  
-Tailwind CSS UI フレームワーク  
-@tailwindcss/forms フォームスタイルの最適化  
-@tailwindcss/typography 記事本文のタイポグラフィ調整  
-EasyMDE Markdown エディタ  
-MySQL / SQLite データベース  
-PHP 8.x 実行環境  
+| 技術                    | 内容                                          |
+| ----------------------- | --------------------------------------------- |
+| Laravel 10              | バックエンドフレームワーク                   |
+| Breeze                  | 認証機能（ログイン / 登録 / パスワード管理） |
+| Tailwind CSS            | UI フレームワーク                             |
+| @tailwindcss/forms      | フォームスタイルの最適化                      |
+| @tailwindcss/typography | 記事本文のタイポグラフィ調整                  |
+| EasyMDE                 | Markdown エディタ                             |
+| MySQL / SQLite          | データベース                                  |
+| PHP 8.1                 | 実行環境                                      |
+
 
 ---
 
