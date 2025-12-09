@@ -137,7 +137,7 @@ Markdown 対応のエディタや、ダッシュボード・検索機能など�
 ## セットアップ
 
 ```bash
-git clone blog-cms
+git clone https://github.com/Tamon-Kawahara/blog-cms.git
 cd blog-cms
 
 cp .env.example .env
