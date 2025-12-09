@@ -1,66 +1,157 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ブログ風コンテンツ管理ツール（Laravel × Tailwind CSS）
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+技術ブログや個人サイト向けのシンプルなコンテンツ管理ツールです。  
+管理画面から記事・カテゴリー・タグを管理し、公開側ではブログとして閲覧できます。
 
-## About Laravel
+Markdown 対応のエディタや、ダッシュボード・検索機能などを備え、  
+ポートフォリオ・学習用途の両方を意識して構築しました。
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 主な機能
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### ■ 記事管理
 
-## Learning Laravel
+- 記事の新規作成 / 編集 / 削除
+- スラッグ管理（未入力時はタイトルから自動生成）
+- 公開状態の切り替え（下書き / 公開）
+- 公開日時 `published_at` の自動設定
+- サムネイル画像のアップロード / 差し替え / 削除
+- カテゴリー・タグとの紐付け（多対多）
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### ■ カテゴリー / タグ
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- カテゴリーの追加 / 編集 / 削除
+- タグの追加 / 編集 / 削除
+- 記事との多対多リレーション
+- 「カテゴリー別」「タグ別」の記事一覧ページ
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### ■ 検索・絞り込み（管理画面）
 
-## Laravel Sponsors
+- キーワード検索（タイトル・本文）
+- ステータスフィルタ（公開 / 下書き）
+- カテゴリーフィルタ
+- ページネーションによる一覧表示
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### ■ ブログ公開画面
 
-### Premium Partners
+- 記事一覧（カードレイアウト）
+  - サムネイル / 公開日 / カテゴリー / タグを表示
+  - ページネーション
+- 記事詳細
+  - パンくずリスト（ホーム > カテゴリー > 記事タイトル）
+  - アイキャッチ画像
+  - カテゴリー / タグ / 公開日
+  - Markdown を整形した本文表示（Tailwind Typography）
+  - 前の記事 / 次の記事リンク
+  - 関連記事表示
+- サイドバー
+  - 検索フォーム
+  - カテゴリー一覧
+  - 最近の記事一覧
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### ■ ダッシュボード
 
-## Contributing
+- 記事数（公開 / 下書き）、カテゴリー数、タグ数の集計
+- 最近更新した記事一覧
+- 管理画面から公開サイトへの導線
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### ■ 認証
 
-## Code of Conduct
+- Breeze によるログイン / 登録 / パスワードリセット
+- ログイン必須の管理画面（ダッシュボード / 記事管理 など）
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 技術スタック
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+技術 内容  
+Laravel 10 バックエンドフレームワーク  
+Breeze 認証機能（ログイン / 登録 / パスワード管理）  
+Tailwind CSS UI フレームワーク  
+@tailwindcss/forms フォームスタイルの最適化  
+@tailwindcss/typography 記事本文のタイポグラフィ調整  
+EasyMDE Markdown エディタ  
+MySQL / SQLite データベース  
+PHP 8.x 実行環境  
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 設計意図・工夫した点
+
+### 1. 管理画面と公開画面の役割分離
+
+- `<x-app-layout>` をベースに、管理画面と公開側でナビゲーションを出し分け
+- 管理画面からは「公開サイトを見る」リンク、公開側からは「管理画面へ」リンクを用意  
+  → 実際の運用を想定した導線設計
+
+### 2. Markdown ベースの執筆体験
+
+- 管理画面の本文入力に EasyMDE を採用し、Markdown で記事を記述
+- 保存時に Laravel の `Str::markdown()` で HTML に変換し、`body_html` として保持  
+  → 執筆時は Markdown、表示時は HTML の良いとこ取り
+
+### 3. ブログ向けタイポグラフィ
+
+- Tailwind Typography プラグインを利用し、記事本文に `.prose` 系クラスを適用
+- 見出し・段落・リスト・引用などが自動的にブログ向けのスタイルに整うよう調整  
+  → マークアップに集中するだけで、読みやすいレイアウトを実現
+
+### 4. 管理画面のレスポンシブ対応
+
+- 記事一覧テーブルは PC をメインターゲットとしつつ、スマホでも情報が破綻しないよう調整
+  - スマホ：タイトルセル内にカテゴリ・タグ・サムネイルを集約して表示
+  - タブレット / PC：列ごとの表示で一覧性を重視  
+  → 「管理はPC想定だが、スマホでの簡易確認も可能」というバランスを意識
+
+---
+
+## スクリーンショット
+
+### ダッシュボード（PC）
+
+![Dashboard](docs/dashboard.png)
+
+---
+
+### 記事一覧（管理画面 / PC）
+
+![Admin Articles](docs/admin-articles.png)
+
+---
+
+### 記事作成（Markdown エディタ）
+
+![Admin Article Create](docs/admin-article-create.png)
+
+---
+
+### 記事詳細（公開側）
+
+![Article Show](docs/article-show.png)
+
+---
+
+## セットアップ
+
+```bash
+git clone blog-cms
+cd blog-cms
+
+cp .env.example .env
+php artisan key:generate
+
+# .env で DB 設定を行う
+
+# マイグレーション
+php artisan migrate
+
+# ストレージのシンボリックリンク（サムネイル表示用）
+php artisan storage:link
+
+# フロントエンド
+npm install
+npm run dev
+
+# 開発サーバー
+php artisan serve
